@@ -1,0 +1,5 @@
+# This is my notes for how I created this project.
+
+1) install npm, vue, vue-cli
+2) vue create .
+3) add vue.config.js with custom express middleware
