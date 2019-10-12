@@ -12,6 +12,9 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/view">View</router-link>
           </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/tools">Tools</router-link>
+          </li>
         </ul>
     </nav>
     <div class="container container-fluid">

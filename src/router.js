@@ -21,6 +21,10 @@ export default new Router({
       path: '/view',
       name: 'view',
       component: () => import('./views/DataBrowser.vue')
+    },
+    { path: '/tools',
+      name: 'tools',
+      component: () => import('./views/Tools.vue')
     }
   ]
 })

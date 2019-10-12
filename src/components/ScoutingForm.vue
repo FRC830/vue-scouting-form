@@ -8,8 +8,6 @@
   </form>
 </template>
 <script>
-import JQuery from 'jquery'
-let $ = JQuery
 export default {
   name: 'ScoutingForm',
   props: {
@@ -17,7 +15,7 @@ export default {
   },
   methods: {
     formSubmit: function (e) {
-      let data = $('#scouting').serialize()
+      let data = this.$('#scouting').serialize()
       this.axios.get(this.saveURL + '?' + data)
       e.preventDefault()
     }
