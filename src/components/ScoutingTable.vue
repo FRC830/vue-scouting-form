@@ -3,13 +3,13 @@
         <thead>
             <tr>
                 <th scope="col">index</th>
-                <th scope="col" v-for="(_, key) in data[0]" v-bind:key=key> {{ key }} </th>
+                <th scope="col" v-for="(_, key) in data[0]" v-bind:key="key"> {{ key }} </th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="(row, index) in data" :key="row">
                 <th scope="row"> {{ index }} </th>
-                <td v-for="(val, idx) in row" v-bind:key=idx> {{ val }} </td>
+                <td v-for="(val, idx) in row" v-bind:key="idx"> {{ val }} </td>
             </tr>
         </tbody>
     </table>
@@ -22,6 +22,6 @@ export default {
             data
         }
     },
-    name: 'ScoutingTable',
+    name: 'ScoutingTable'
 }
 </script>
