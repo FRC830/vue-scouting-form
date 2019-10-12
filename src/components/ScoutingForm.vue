@@ -12,10 +12,13 @@ import JQuery from 'jquery'
 let $ = JQuery
 export default {
   name: 'ScoutingForm',
+  props: {
+    saveURL: String
+  },
   methods: {
     formSubmit: function (e) {
       let data = $('#scouting').serialize()
-      this.axios.get('/api/save?' + data)
+      this.axios.get(this.saveURL + '?' + data)
       e.preventDefault()
     }
   }

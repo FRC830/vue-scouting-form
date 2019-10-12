@@ -9,3 +9,8 @@
 7) create form
 8) form handler in ScoutingForm
 9) api handler to save to file
+
+redid save function to create file if it does not exist
+added data viewer tab
+try to use dynamic json import, could not figure out resort to hard coding
+TODO dynamic import for json file? get request?
