@@ -1,18 +1,21 @@
+/* Api for managing all requests through the /api/ parameter */
 var express = require('express')
 var router = express.Router()
 const fs = require('fs')
 
+const file = 'data/scouting.json'
 router.get('/', (req, res) => {
     res.send('Success!')
 })
 router.get('/save', (req, res) => {
     console.log('Got', req.query)
     res.send('Yay')
-    fs.readFile('data.json', (err, data) => {
-        if (err) { throw err }
-        let newJSON = JSON.parse(data)
-        newJSON.push(req.query)
-        fs.writeFile('data.json', JSON.stringify(newJSON), err => { if (err) { throw err } })
+    fs.readFile(file, (err, rawData) => {
+        let data = err ? [] : JSON.parse(rawData)
+        data.push(req.query)
+        fs.writeFile(file, JSON.stringify(data), { flag: 'w' }, (err) => {
+            if (err) { throw err }
+        })
     })
 })
 
