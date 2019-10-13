@@ -19,7 +19,7 @@ router.post('/upload-schedule', (req, res) => {
     form.parse(req)
     form
     .on('file', (_, file) => {
-        fs.rename(file.path, path.join(form.uploadDir, file.name), (err) => {
+        fs.rename(file.path, path.join(form.uploadDir, 'schedules', file.name), (err) => {
             if (err) throw err
         })
     })
@@ -77,7 +77,7 @@ router.post('/download-schedule/:event', (req, res) => {
     console.log(url)
     axios.get(url, { headers: { 'X-TBA-Auth-Key': auth } }).then(result => {
         var final = {}
-        let loc = path.join('data', req.params.event + '.json')
+        let loc = path.join('data', 'schedules', req.params.event + '.json')
         result.data
         .filter(val => { return val.comp_level === 'qm' })
         .forEach((val, index) => {
