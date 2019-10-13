@@ -1,5 +1,5 @@
 <template>
-  <form id="scouting" @submit="formSubmit">
+  <form id="scouting" @submit.prevent="formSubmit">
     <p>Hello</p>
     <div class="form-group">
       <input type="text" name="text" placeholder="name!" />
@@ -17,7 +17,6 @@ export default {
     formSubmit: function (e) {
       let data = this.$('#scouting').serialize()
       this.axios.get(this.saveURL + '?' + data)
-      e.preventDefault()
     }
   }
 }

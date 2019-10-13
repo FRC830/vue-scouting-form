@@ -15,11 +15,20 @@
     </table>
 </template>
 <script>
-import data from '../../data/scouting.json'
 export default {
     data: function () {
         return {
-            data
+            data: []
+        }
+    },
+    mounted () {
+        this.setData()
+    },
+    methods: {
+        setData () {
+            this.axios.get('/api/get/scouting.csv')
+            .then(res => { this.data = res.data })
+            .catch(err => { throw err })
         }
     },
     name: 'ScoutingTable'
