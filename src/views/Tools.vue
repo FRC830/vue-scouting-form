@@ -16,9 +16,9 @@
     </div>
 
     <div class="form-group">
-      <select name="station" class="form-control" v-model='station' required>
+      <select name="station" class="form-control" ref='station' @change='handleStationSelect()' required>
         <option disabled selected>-- Select Station --</option>
-        <option v-for="option in options" :value="cleanOption(option)" v-bind:key="option"> {{ option }} </option>
+        <option v-for="option in options" :value="option" v-bind:key="option" > {{ option }} </option>
         </select>
     </div>
     <button class="btn btn-primary" type="submit">Save</button>
@@ -32,14 +32,21 @@ export default {
     name: 'Tools',
     data: function () {
         return {
-            select: '',
             file: '',
-            message: '',
             station: '',
+            stationNum: '',
+            select: '',
+            message: '',
             options: ['Red 1', 'Red 2', 'Red 3', 'Blue 1', 'Blue 2', 'Blue 3']
         }
     },
     methods: {
+        handleStationSelect () {
+            console.log(this.$refs.station.value)
+            let vals = this.$refs.station.value.split(' ')
+            this.station = vals[0].toLowerCase()
+            this.stationNum = vals[1]
+        },
         handleFileSubmit () {
             // https://blog.bitsrc.io/uploading-files-and-images-with-vue-and-express-2018ca0eecd0
             this.file = this.$refs.file.files[0]
@@ -47,10 +54,16 @@ export default {
         async configSubmit () {
             if (this.select === 'file') {
                 await this.uploadSchedule()
-                await this.saveConfig({ 'schedule': this.file.name, 'station': this.station })
+                await this.saveConfig({
+                'schedule': this.file.name,
+                'station': this.station,
+                'stationNum': this.stationNum })
             } else {
                 await this.downloadSchedule()
-                await this.saveConfig({ 'schedule': this.$refs.match.value + '.json', 'station': this.station })
+                await this.saveConfig({
+                    'schedule': this.$refs.match.value + '.json',
+                    'station': this.station,
+                    'stationNum': this.stationNum })
             }
         },
         async uploadSchedule () {

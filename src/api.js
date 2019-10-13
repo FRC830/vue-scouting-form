@@ -7,11 +7,12 @@ const csv = require('fast-csv')
 var formidable = require('formidable')
 const auth = '29xEqqZ2h6p7rWSLyKgTPglPgIBl0SApb22HM3YZNmiasuRCaGfx9BCuIoL7ayjP'
 var router = express.Router()
+
 router.get('/', (req, res) => {
-    res.send('Success!')
+    res.status(200).send('API online')
 })
 
-router.post('/upload-schedule', (req, res) => {
+router.post('/upload-schedule', (req, res, next) => {
     var form = formidable.IncomingForm()
     form.uploadDir = 'data'
     form.keepExtensions = true
@@ -20,14 +21,14 @@ router.post('/upload-schedule', (req, res) => {
     form
     .on('file', (_, file) => {
         fs.rename(file.path, path.join(form.uploadDir, 'schedules', file.name), (err) => {
-            if (err) throw err
+            if (err) { next(err) }
         })
     })
-    .on('error', (err) => { throw err })
-    .on('end', () => { res.send('OK') })
+    .on('error', (err) => { next(err) })
+    .on('end', () => { res.status(200) })
 })
 // hopefully no one malicious abuses this system
-router.get('/get/:file', (req, res) => {
+router.get('/get/:file', (req, res, next) => {
     let loc = path.join('data', req.params.file)
     let fileType = req.params.file.split('.')[1]
     if (fileType === 'csv') {
@@ -35,61 +36,60 @@ router.get('/get/:file', (req, res) => {
         fs.createReadStream(loc)
         .pipe(csv.parse({ headers: true }))
         .on('data', data => results.push(data))
-        .on('end', () => res.send(results))
+        .on('end', () => res.status(200).json(results))
     } else {
         fs.readFile(loc, (err, rawData) => {
             if (err) {
-                res.send(err)
-                return
+                next(err)
             }
             if (fileType === 'json') {
-                res
-                .set('Content-Type', 'application/json')
-                .send(rawData)
+                res.status(200).json(rawData)
             }
         })
     }
 })
-router.get('/save/:file', (req, res) => {
+router.get('/save/:file', (req, res, next) => {
     console.log('Got', req.query)
     let fileType = req.params.file.split('.')[1]
     let loc = path.join('data', req.params.file)
 
     if (fileType === 'json') {
         fs.writeFile(loc, JSON.stringify(req.query), (err) => {
-            if (err) { throw err }
-            res.send('OK')
+            if (err) { next(err) }
         })
+        res.status(200)
     } else if (fileType === 'csv') {
         let exists = fs.existsSync(loc)
 
         let ws = fs.createWriteStream(loc, { flags: 'a' })
-        ws.on('close', () => res.send('ok'))
+        ws.on('close', () => res.status(200))
         ws.write((exists) ? '\n' : '')
 
         csv.write([req.query], { headers: !exists })
         .pipe(ws)
-        .on('error', (e) => { throw e })
+        .on('error', (e) => { next(e) })
     }
 })
-router.post('/download-schedule/:event', (req, res) => {
+router.post('/download-schedule/:event', (req, res, next) => {
     let url = `https://www.thebluealliance.com/api/v3/event/${req.params.event}/matches/simple`
     console.log(url)
     axios.get(url, { headers: { 'X-TBA-Auth-Key': auth } }).then(result => {
-        var final = {}
         let loc = path.join('data', 'schedules', req.params.event + '.json')
-        result.data
+        let values = result.data
         .filter(val => { return val.comp_level === 'qm' })
-        .forEach((val, index) => {
-            let data = { 'red': val.alliances.red.team_keys,
-            'blue': val.alliances.blue.team_keys }
-            console.log(val.match_number)
-            final[val.match_number] = data
+        .map((val, index) => {
+            return {
+                'red': val.alliances.red.team_keys,
+                'blue': val.alliances.blue.team_keys
+            }
         })
         let stream = fs.createWriteStream(loc)
-        stream.write(JSON.stringify(final, null, 2))
-        stream.on('error', (err) => { throw err })
-        res.send('ok')
-    }).catch(err => { throw err })
+        stream.write(JSON.stringify(values, null, 2))
+        stream.on('error', (err) => { next(err) })
+        res.status(200)
+    }).catch(err => { next(err) })
+})
+router.use((err, req, res, next) => {
+    res.status(500).json({ error: err })
 })
 module.exports = router
