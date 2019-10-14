@@ -9,6 +9,8 @@
     "prod": "node production-server.js"
   },
   "dependencies": {
+    "ag-grid-community": "^21.2.2",
+    "ag-grid-vue": "^21.2.2",
     "axios": "^0.19.0",
     "core-js": "^2.6.5",
     "express": "^4.17.1",
@@ -19,6 +21,7 @@
     "open": "^6.4.0",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.5",
+    "vue-property-decorator": "^8.2.2",
     "vue-router": "^3.0.3"
   },
   "devDependencies": {

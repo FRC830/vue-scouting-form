@@ -5,7 +5,7 @@ const fs = require('fs')
 const path = require('path')
 const csv = require('fast-csv')
 var formidable = require('formidable')
-const auth = '29xEqqZ2h6p7rWSLyKgTPglPgIBl0SApb22HM3YZNmiasuRCaGfx9BCuIoL7ayjP'
+const TBA_AUTH = '29xEqqZ2h6p7rWSLyKgTPglPgIBl0SApb22HM3YZNmiasuRCaGfx9BCuIoL7ayjP'
 var router = express.Router()
 
 router.get('/', (req, res) => {
@@ -27,7 +27,7 @@ router.post('/upload-schedule', (req, res, next) => {
     .on('error', (err) => { next(err) })
     .on('end', () => { res.status(200) })
 })
-// hopefully no one malicious abuses this system
+
 router.get('/get/:file', (req, res, next) => {
     let loc = path.join('data', req.params.file)
     let fileType = req.params.file.split('.')[1]
@@ -57,7 +57,7 @@ router.get('/save/:file', (req, res, next) => {
         fs.writeFile(loc, JSON.stringify(req.query), (err) => {
             if (err) { next(err) }
         })
-        res.status(200)
+        res.status(200).send()
     } else if (fileType === 'csv') {
         let exists = fs.existsSync(loc)
 
@@ -73,7 +73,7 @@ router.get('/save/:file', (req, res, next) => {
 router.post('/download-schedule/:event', (req, res, next) => {
     let url = `https://www.thebluealliance.com/api/v3/event/${req.params.event}/matches/simple`
     console.log(url)
-    axios.get(url, { headers: { 'X-TBA-Auth-Key': auth } }).then(result => {
+    axios.get(url, { headers: { 'X-TBA-Auth-Key': TBA_AUTH } }).then(result => {
         let loc = path.join('data', 'schedules', req.params.event + '.json')
         let values = result.data
         .filter(val => { return val.comp_level === 'qm' })
@@ -86,7 +86,7 @@ router.post('/download-schedule/:event', (req, res, next) => {
         let stream = fs.createWriteStream(loc)
         stream.write(JSON.stringify(values, null, 2))
         stream.on('error', (err) => { next(err) })
-        res.status(200)
+        res.status(200).send()
     }).catch(err => { next(err) })
 })
 router.use((err, req, res, next) => {
