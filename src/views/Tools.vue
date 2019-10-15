@@ -79,8 +79,8 @@ export default {
             this.axios.post(`/api/download-schedule/${this.$refs.match.value}`)
         },
         saveConfig: async function (config) {
-            console.log(config)
-            this.axios.get('/api/save/config.json', { params: config })
+            console.log('Config is:', config)
+            this.axios.post('/api/save/config.json', config)
         },
         cleanOption: function (str) {
           return str.toLowerCase().replace(' ', '-', -1)

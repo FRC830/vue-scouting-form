@@ -1,11 +1,8 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand">
-      <a class="navbar-brand" href="#">Ratpack Scouting Form</a>
+      <router-link class="nav-link" to="/">Ratpack Scouting Form</router-link>
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <router-link class="nav-link" to="/">Home</router-link>
-          </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/form">Scout</router-link>
           </li>

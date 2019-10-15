@@ -8,6 +8,8 @@ var formidable = require('formidable')
 const TBA_AUTH = '29xEqqZ2h6p7rWSLyKgTPglPgIBl0SApb22HM3YZNmiasuRCaGfx9BCuIoL7ayjP'
 const router = express.Router()
 
+router.use(express.json())
+
 router.get('/', (req, res) => {
     res.status(200).send('API online')
 })
@@ -49,13 +51,13 @@ router.get('/get/:file', (req, res, next) => {
         })
     }
 })
-router.get('/save/:file', (req, res, next) => {
-    console.log('Got', req.query, req.params.file)
+router.post('/save/:file', (req, res, next) => {
+    console.log('Got', req.body, req.params.file)
     let fileType = req.params.file.split('.')[1]
     let loc = path.join('data', req.params.file)
 
     if (fileType === 'json') {
-        fs.writeFile(loc, JSON.stringify(req.query), (err) => {
+        fs.writeFile(loc, JSON.stringify(req.body, null, 2), (err) => {
             if (err) { next(err) }
         })
         res.status(200).send()
@@ -66,7 +68,7 @@ router.get('/save/:file', (req, res, next) => {
         ws.on('close', () => res.status(200))
         ws.write((exists) ? '\n' : '')
 
-        csv.write([req.query], { headers: !exists })
+        csv.write([req.body], { headers: !exists })
         .pipe(ws)
         .on('error', (e) => { next(e) })
     }
