@@ -1,24 +1,14 @@
 # vue-scouting-form
 
-## Project setup
-```
-npm install
-```
+## Setup
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
++ `npm install`
+Testing
++ `npm run serve`
+Production
++ `npm run build && npm run prod`
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+TODO
++ fix saving config
++ add error messages
++ better ui

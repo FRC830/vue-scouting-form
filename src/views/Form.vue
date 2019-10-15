@@ -1,7 +1,7 @@
 <template>
   <div class="about">
-    <h1>This is the form submit page</h1>
-    <ScoutingForm saveURL='/api/save'></ScoutingForm>
+    <h5>This is the form submit page</h5>
+    <ScoutingForm></ScoutingForm>
 
   </div>
 </template>

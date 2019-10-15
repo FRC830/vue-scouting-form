@@ -1,6 +1,6 @@
 const express = require('express')
 const open = require('open')
-const api = require('./src/api')
+const api = require('./src/api').default
 const port = 3000
 let app = express()
 app.use(express.static('dist'))

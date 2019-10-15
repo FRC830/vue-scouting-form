@@ -1,12 +1,12 @@
 /* Api for managing all requests through the /api/ parameter */
-var express = require('express')
-var axios = require('axios')
+const express = require('express')
+const axios = require('axios')
 const fs = require('fs')
 const path = require('path')
 const csv = require('fast-csv')
 var formidable = require('formidable')
 const TBA_AUTH = '29xEqqZ2h6p7rWSLyKgTPglPgIBl0SApb22HM3YZNmiasuRCaGfx9BCuIoL7ayjP'
-var router = express.Router()
+const router = express.Router()
 
 router.get('/', (req, res) => {
     res.status(200).send('API online')
@@ -28,7 +28,7 @@ router.post('/upload-schedule', (req, res, next) => {
     .on('end', () => { res.status(200) })
 })
 
-router.get('/get/:file*', (req, res, next) => {
+router.get('/get/:file', (req, res, next) => {
     let loc = path.join('data', req.params.file)
     let fileType = req.params.file.split('.')[1]
     if (fileType === 'csv') {
@@ -49,8 +49,8 @@ router.get('/get/:file*', (req, res, next) => {
         })
     }
 })
-router.get('/save/:file*', (req, res, next) => {
-    console.log('Got', req.query)
+router.get('/save/:file', (req, res, next) => {
+    console.log('Got', req.query, req.params.file)
     let fileType = req.params.file.split('.')[1]
     let loc = path.join('data', req.params.file)
 
