@@ -28,7 +28,7 @@ router.post('/upload-schedule', (req, res, next) => {
     .on('end', () => { res.status(200) })
 })
 
-router.get('/get/:file', (req, res, next) => {
+router.get('/get/:file*', (req, res, next) => {
     let loc = path.join('data', req.params.file)
     let fileType = req.params.file.split('.')[1]
     if (fileType === 'csv') {
@@ -38,17 +38,18 @@ router.get('/get/:file', (req, res, next) => {
         .on('data', data => results.push(data))
         .on('end', () => res.status(200).json(results))
     } else {
+        console.log('Location', loc)
         fs.readFile(loc, (err, rawData) => {
             if (err) {
                 next(err)
             }
             if (fileType === 'json') {
-                res.status(200).json(rawData)
+                res.status(200).json(JSON.parse(rawData))
             }
         })
     }
 })
-router.get('/save/:file', (req, res, next) => {
+router.get('/save/:file*', (req, res, next) => {
     console.log('Got', req.query)
     let fileType = req.params.file.split('.')[1]
     let loc = path.join('data', req.params.file)
@@ -80,9 +81,11 @@ router.post('/download-schedule/:event', (req, res, next) => {
         .map((val, index) => {
             return {
                 'red': val.alliances.red.team_keys,
-                'blue': val.alliances.blue.team_keys
+                'blue': val.alliances.blue.team_keys,
+                'match': parseInt(val.match_number)
             }
         })
+        values.sort((a, b) => (a.match > b.match) ? 1 : -1)
         let stream = fs.createWriteStream(loc)
         stream.write(JSON.stringify(values, null, 2))
         stream.on('error', (err) => { next(err) })

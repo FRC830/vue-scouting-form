@@ -56,14 +56,18 @@ export default {
                 await this.uploadSchedule()
                 await this.saveConfig({
                 'schedule': this.file.name,
+                'matchNum': 1,
                 'station': this.station,
-                'stationNum': this.stationNum })
+                'stationNum': this.stationNum,
+                })
             } else {
                 await this.downloadSchedule()
                 await this.saveConfig({
                     'schedule': this.$refs.match.value + '.json',
+                    'matchNum': 1,
                     'station': this.station,
-                    'stationNum': this.stationNum })
+                    'stationNum': this.stationNum,
+                    })
             }
         },
         async uploadSchedule () {

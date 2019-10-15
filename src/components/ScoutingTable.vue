@@ -46,7 +46,7 @@ export default {
                     if (!isNaN(sampleRow[key])) {
                         filter = 'agNumberColumnFilter'
                     }
-                    cols.push({ headerName: this.capitalize(key),
+                    cols.push({ headerName: key.capitalize(),
                     field: key,
                     sortable: true,
                     filter: filter,
@@ -56,9 +56,6 @@ export default {
                 this.rows = data
             })
             .catch(err => { throw err })
-        },
-        capitalize: function (s) {
-            return s.charAt(0).toUpperCase() + s.slice(1)
         },
         onGridReady (params) {
             this.gridApi = params.api
