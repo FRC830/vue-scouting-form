@@ -98,6 +98,6 @@ router.post('/download-schedule/:event', (req, res, next) => {
     })
 })
 router.use((err, req, res, next) => {
-    res.status(500).json({'error': err.message})
+    res.status(500).json({ 'error': err.message })
 })
 module.exports = router
