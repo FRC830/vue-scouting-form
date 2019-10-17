@@ -92,9 +92,12 @@ router.post('/download-schedule/:event', (req, res, next) => {
         stream.write(JSON.stringify(values, null, 2))
         stream.on('error', (err) => { next(err) })
         res.status(200).send()
-    }).catch(err => { next(err) })
+    }).catch(() => {
+        let error = new Error('it exploded')
+        next(error)
+    })
 })
 router.use((err, req, res, next) => {
-    res.status(500).json({ error: err })
+    res.status(500).json({'error': err.message})
 })
 module.exports = router
