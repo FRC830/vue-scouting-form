@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand">
-      <router-link class="nav-link" to="/">Ratpack Scouting Form</router-link>
+      <router-link class="nav-link" to="/">Home</router-link>
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <router-link class="nav-link" to="/form">Scout</router-link>

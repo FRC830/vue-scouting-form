@@ -27,7 +27,7 @@ router.post('/upload-schedule', (req, res, next) => {
         })
     })
     .on('error', (err) => { next(err) })
-    .on('end', () => { res.status(200) })
+    .on('end', () => { res.status(200).json({ 'success': `File ${req.file.name} was saved successfully` }) })
 })
 
 router.get('/get/:file', (req, res, next) => {

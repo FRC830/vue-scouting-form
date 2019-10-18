@@ -1,1 +1,6 @@
-{}
+{
+  "schedule": "2019isde2.json",
+  "matchNum": 1,
+  "station": "red",
+  "stationNum": "1"
+}

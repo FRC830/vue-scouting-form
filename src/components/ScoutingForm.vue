@@ -1,17 +1,37 @@
 <template>
-  <form id="scouting" @submit.prevent="formSubmit" ref="form">
-    <p v-if="config.station" > {{ info }} </p>
-    <div>
-      <p v-if="schedule.match"> Scouting match #{{ schedule.match }} for team {{ schedule[config.station][config.stationNum - 1] }}. </p>
+  <div id="scouting-form">
+    <div class="row">
+      <div class="col mb-1">
+          <button v-if="config.station" type="button" :class="[this.config.station == 'red' ? 'btn-danger' : 'btn-primary']"class="btn btn-primary mr-1"> Station
+            <span class="badge badge-light"> {{ config.station.capitalize() + " " + config.stationNum }} </span> 
+          </button>
+          <button v-if="config.schedule" type="button" class="btn btn-primary mr-1"> Event
+            <span class="badge badge-light"> {{ config.schedule.split('.')[0] }} </span> 
+          </button>  
+          <button v-if="currentMatch" type="button" class="btn btn-primary mr-1"> Match
+            <span class="badge badge-light"> {{ currentMatch.match }} </span> 
+          </button>
+          <button v-if="currentMatch" type="button" class="btn btn-primary"> Team
+            <span class="badge badge-light"> {{ currentMatch[config.station][config.stationNum - 1].replace('frc','') }} </span> 
+          </button>  
+      </div>
     </div>
-    <div class="form-group">
-      <input type="text" name="text" placeholder="Name" />
+  
+  <div class="row">
+    <div class="col">
+    <form id="scouting" @submit.prevent="formSubmit" ref="form">
+
+      <div class="form-group">
+        <input type="text" name="text" placeholder="Name" />
+      </div>
+      <div class="form-group">
+        <input type="number" name="value" placeholder="Age" />
+      </div>
+      <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
+    </form>
     </div>
-    <div class="form-group">
-      <input type="number" name="value" placeholder="Age" />
-    </div>
-    <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
-  </form>
+  </div>
+  </div>
 </template>
 <script>
 import serializeArray from '../serialize.js'
@@ -28,7 +48,8 @@ export default {
   data () {
     return {
       config: {},
-      schedule: {}
+      schedule: {},
+      currentMatch: {}
     }
   },
   mounted () {
@@ -37,9 +58,13 @@ export default {
   computed: {
     info () {
       return `Currently scouting for ${this.config.station.capitalize()} ${this.config.stationNum} at event ${this.config.schedule.split('.')[0]}`
-    }
+    },
+
   },
   methods: {
+    setCurrentMatch() {
+      this.currentMatch = this.schedule[this.config.matchNum]
+    },
     async getConfigAndSchedule () {
       // Retrieve Config
       await this.axios.get('/api/get/config.json').then(res => {
@@ -58,7 +83,9 @@ export default {
       })
 
       this.axios.get('/api/get/' + `schedules/${this.config.schedule}`.replace('/', '%2F')).then(res => {
-        this.schedule = res.data[this.config.matchNum]
+        console.log('matchNum', this.config.matchNum)
+        this.schedule = res.data
+        this.setCurrentMatch()
         this.$emit('message', 'success', `Successfully retreived schedule ${this.config.schedule}.`)
       }).catch(err => {
         this.$emit('message', 'error', err.response.data.error)
@@ -68,6 +95,7 @@ export default {
       let data = serializeArray(this.$refs.form)
       this.save('scouting.csv', data)
       this.config.matchNum += 1
+      this.setCurrentMatch()
       this.save('config.json', this.config)
     },
     save (file, data) {
