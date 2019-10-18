@@ -1,29 +1,27 @@
 <template>
 <div id="tools">
-<div v-if="error" class="alert alert-error alert-dismissible fade show" role="alert">
-    {{ error }}
-    <button type="button" class="close" data-dismiss="alert">
-        <span>&times;</span>
-    </button>
-</div>
-<ConfigForm @error="displayError"></ConfigForm>
+<ErrorMessage v-for="message in messages" :message="message.value" :kind="message.kind" v-bind:key="message"></ErrorMessage>
+<ConfigForm @message="displayMessage(...arguments)"></ConfigForm>
 </div>
 </template>
 <script>
 import ConfigForm from '@/components/ConfigForm.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
 export default {
     name: 'Tools',
     components: {
-        ConfigForm
+        ConfigForm,
+        ErrorMessage
     },
-    data: function () {
+    data () {
         return {
-            error: ''
+            messages: [],
+            kind: ''
         }
     },
     methods: {
-        displayError (value) {
-            this.error = value.message
+        displayMessage (kind, value) {
+            this.messages.push({kind: kind, value: value})
         }
     }
 }

@@ -3,12 +3,15 @@
 ## Setup
 
 + `npm install`
-Testing
 + `npm run serve`
-Production
+
+For production, use
+
 + `npm run build && npm run prod`
 
 TODO
-+ fix saving config
-+ add error messages
-+ better ui
+
+- [x] Settings Error Handling
+- [ ] ScoutingTable Error Handling
+- [ ] ScoutingForm Error Handling
+- [ ] Improve UI + Homepage

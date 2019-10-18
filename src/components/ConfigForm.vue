@@ -2,20 +2,20 @@
   <form id="config" @submit.prevent="configSubmit">
     <h1> Edit Config </h1>
     <div class="form-group">
-      <input class="form-check-input" type="radio" name="configType" value="find" id='1' v-model="select" selected>
+      <input class="form-check-input" type="radio" name="configType" value="download" id='1' v-model="select" selected>
       <label class="form-check-label" for="1">Match ID</label>
     </div>
     <div class="form-group">
-      <input class="form-check-input" type="radio" name="configType" value="file" id='2' v-model="select">
+      <input class="form-check-input" type="radio" name="configType" value="upload" id='2' v-model="select">
       <label class="form-check-label" for="2">Select File</label>
     </div>
     <div class="form-group">
-    <input v-if="select == 'find'" ref='match' type="text" name='match' placeholder="Match ID">
-    <input v-if="select == 'file'" ref='file' type="file" name="file" @change='handleFileSubmit()'>
+    <input v-if="select == 'download'" ref='match' type="text" name='match' placeholder="Match ID">
+    <input v-else ref='file' type="file" name="file" @change="fileSubmit">
     </div>
 
     <div class="form-group">
-      <select name="station" class="form-control" ref='station' @change='handleStationSelect()' required>
+      <select name="station" class="form-control" v-model="station" required>
         <option disabled selected>-- Select Station --</option>
         <option v-for="option in options" :value="option" v-bind:key="option" > {{ option }} </option>
         </select>
@@ -29,64 +29,54 @@ export default {
     data () {
         return {
             file: '',
-            station: '',
-            stationNum: '',
             select: '',
+            station: '',
             options: ['Red 1', 'Red 2', 'Red 3', 'Blue 1', 'Blue 2', 'Blue 3']
         }
     },
     methods: {
-        handleStationSelect () {
-            console.log(this.$refs.station.value)
-            let vals = this.$refs.station.value.split(' ')
-            this.station = vals[0].toLowerCase()
-            this.stationNum = vals[1]
-        },
-        handleFileSubmit () {
-            // https://blog.bitsrc.io/uploading-files-and-images-with-vue-and-express-2018ca0eecd0
+        fileSubmit () {
             this.file = this.$refs.file.files[0]
         },
         async configSubmit () {
-            if (this.select === 'file') {
-                await this.uploadSchedule()
-                await this.saveConfig({
-                'schedule': this.file.name,
+            let vals = this.station.split(' ')
+            let station = vals[0].toLowerCase()
+            let stationNum = vals[1]
+            let result = this[this.select + 'Schedule']()
+            let fileName = (this.select === 'upload') ? this.file.name : this.$refs.match.value + '.json'
+
+            result.then((res) => {
+                this.$emit('message', 'success', `file ${fileName} was saved successfully!`)
+                this.saveConfig({
+                'schedule': fileName,
                 'matchNum': 0,
-                'station': this.station,
-                'stationNum': this.stationNum
-                })
-            } else {
-                await this.downloadSchedule()
-                await this.saveConfig({
-                    'schedule': this.$refs.match.value + '.json',
-                    'matchNum': 0,
-                    'station': this.station,
-                    'stationNum': this.stationNum
-                    })
-            }
+                'station': station,
+                'stationNum': stationNum
+            })
+            }).catch(err => {
+                console.log(err.response.data.error)
+                this.$emit('message', 'error', err.response.data.error)
+            })
+
         },
         async uploadSchedule () {
             const formData = new FormData()
             formData.append('file', this.file)
-            this.axios.post('/api/upload-schedule', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-            .catch(err => {
-                this.$emit('error', err.response.data)
-            })
+            return this.axios.post('/api/upload-schedule', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
         },
         async downloadSchedule () {
-            this.axios.post(`/api/download-schedule/${this.$refs.match.value}`).catch(err => {
-                this.$emit('error', err.response.data)
-            })
+            return this.axios.post(`/api/download-schedule/${this.$refs.match.value}`)
         },
-        saveConfig: async function (config) {
+        async saveConfig (config) {
             console.log('Config is:', config)
             this.axios.post('/api/save/config.json', config).catch(err => {
-                this.$emit('error', err.response.data)
+                this.$emit('message', 'error', err.response.data)
+            }).then(res => {
+                this.$emit('message', 'success', 'The configuration file was saved successfully!')
+            }).catch(err => {
+                this.$emit('message', 'error', err.response.data.error)
             })
-        },
-        cleanOption: function (str) {
-          return str.toLowerCase().replace(' ', '-', -1)
-      }
+        }
     }
 }
 </script>

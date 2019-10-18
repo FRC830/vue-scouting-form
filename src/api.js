@@ -93,7 +93,7 @@ router.post('/download-schedule/:event', (req, res, next) => {
         stream.on('error', (err) => { next(err) })
         res.status(200).send()
     }).catch(() => {
-        let error = new Error('it exploded')
+        let error = new Error(`Could not find match ${req.params.event}. Make sure it includes the year and is spelled correctly!`)
         next(error)
     })
 })
