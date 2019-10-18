@@ -11,7 +11,5 @@ For production, use
 
 TODO
 
-- [x] Settings Error Handling
-- [ ] ScoutingTable Error Handling
-- [ ] ScoutingForm Error Handling
+- [x] Error Handling
 - [ ] Improve UI + Homepage

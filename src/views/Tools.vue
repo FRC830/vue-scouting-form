@@ -8,20 +8,18 @@
 import ConfigForm from '@/components/ConfigForm.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 export default {
-    name: 'Tools',
     components: {
         ConfigForm,
         ErrorMessage
     },
     data () {
         return {
-            messages: [],
-            kind: ''
+            messages: []
         }
     },
     methods: {
         displayMessage (kind, value) {
-            this.messages.push({kind: kind, value: value})
+            this.messages.push({ kind: kind, value: value })
         }
     }
 }

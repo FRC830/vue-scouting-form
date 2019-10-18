@@ -11,7 +11,7 @@ const router = express.Router()
 router.use(express.json())
 
 router.get('/', (req, res) => {
-    res.status(200).send('API online')
+    res.status(200).json({ 'success': 'API online' })
 })
 
 router.post('/upload-schedule', (req, res, next) => {
@@ -36,14 +36,16 @@ router.get('/get/:file', (req, res, next) => {
     if (fileType === 'csv') {
         var results = []
         fs.createReadStream(loc)
+        .on('error', () => { next(Error(`The file ${req.params.file} could not be retrieved`)) })
         .pipe(csv.parse({ headers: true }))
         .on('data', data => results.push(data))
+        .on('error', (err) => { next(err) })
         .on('end', () => res.status(200).json(results))
     } else {
         console.log('Location', loc)
         fs.readFile(loc, (err, rawData) => {
             if (err) {
-                next(err)
+                next(Error(`The file ${req.params.file} could not be retrieved`))
             }
             if (fileType === 'json') {
                 res.status(200).json(JSON.parse(rawData))
@@ -60,12 +62,12 @@ router.post('/save/:file', (req, res, next) => {
         fs.writeFile(loc, JSON.stringify(req.body, null, 2), (err) => {
             if (err) { next(err) }
         })
-        res.status(200).send()
+        res.status(200).json({ 'success': `File ${req.params.file} was saved successfully` })
     } else if (fileType === 'csv') {
         let exists = fs.existsSync(loc)
 
         let ws = fs.createWriteStream(loc, { flags: 'a' })
-        ws.on('close', () => res.status(200))
+        ws.on('close', () => res.status(200).json({ 'success': `File ${req.params.file} was saved successfully` }))
         ws.write((exists) ? '\n' : '')
 
         csv.write([req.body], { headers: !exists })
@@ -91,9 +93,9 @@ router.post('/download-schedule/:event', (req, res, next) => {
         let stream = fs.createWriteStream(loc)
         stream.write(JSON.stringify(values, null, 2))
         stream.on('error', (err) => { next(err) })
-        res.status(200).send()
+        res.status(200).json({ 'success': `The schedule for event ${req.params.event} was saved.` })
     }).catch(() => {
-        let error = new Error(`Could not find match ${req.params.event}. Make sure it includes the year and is spelled correctly!`)
+        let error = new Error(`Could not find event ${req.params.event}. Make sure it includes the year and is spelled correctly!`)
         next(error)
     })
 })

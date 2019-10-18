@@ -15,16 +15,24 @@
 </template>
 <script>
 import serializeArray from '../serialize.js'
+
+class ValidationError extends Error {
+  constructor (message) {
+    super(message)
+    this.name = 'ValidationError'
+  }
+}
+
 export default {
   name: 'ScoutingForm',
-  data: function () {
+  data () {
     return {
       config: {},
       schedule: {}
     }
   },
   mounted () {
-    this.getConfig()
+    this.getConfigAndSchedule()
   },
   computed: {
     info () {
@@ -32,37 +40,41 @@ export default {
     }
   },
   methods: {
-    getConfig () {
-      this.axios.get('/api/get/config.json').then(res => {
-        console.log('received', res.data)
-        if (res.data.schedule) {
-          this.getSchedule(res.data)
-          this.config = res.data
+    async getConfigAndSchedule () {
+      // Retrieve Config
+      await this.axios.get('/api/get/config.json').then(res => {
+        if (!res.data.schedule) {
+          throw new ValidationError('Configuration File Corrupted. Try Saving Configuration Again.')
         }
+        this.config = res.data
+        this.$emit('message', 'success', `Successfully retrieved configuration file.`)
       }).catch(err => {
-        throw err
+        console.log('Error:', err)
+        if (err instanceof ValidationError) {
+          this.$emit('message', 'error', err)
+          return
+        }
+        this.$emit('message', 'error', err.response.data.error)
+      })
+
+      this.axios.get('/api/get/' + `schedules/${this.config.schedule}`.replace('/', '%2F')).then(res => {
+        this.schedule = res.data[this.config.matchNum]
+        this.$emit('message', 'success', `Successfully retreived schedule ${this.config.schedule}.`)
+      }).catch(err => {
+        this.$emit('message', 'error', err.response.data.error)
       })
     },
-    formSubmit: function (e) {
+    formSubmit (e) {
       let data = serializeArray(this.$refs.form)
-      console.log(data)
-      this.axios.post('/api/save/scouting.csv', data)
+      this.save('scouting.csv', data)
       this.config.matchNum += 1
-      if (this.config.matchNum) {
-        console.log(JSON.stringify(this.config), 'saving')
-        this.axios.post('/api/save/config.json', this.config)
-      }
+      this.save('config.json', this.config)
     },
-
-    getSchedule: function (data) {
-      if (!data.schedule) {
-        console.log(data)
-        throw Error('Reeeee')
-      }
-      this.axios.get('/api/get/' + `schedules/${data.schedule}`.replace('/', '%2F')).then(res => {
-        this.schedule = res.data[data.matchNum]
+    save (file, data) {
+      this.axios.post(`/api/save/${file}`, data).then(res => {
+        this.$emit('message', 'success', res.data.success)
       }).catch(err => {
-        throw err
+        this.$emit('message', 'error', err.response.data.error)
       })
     }
   }

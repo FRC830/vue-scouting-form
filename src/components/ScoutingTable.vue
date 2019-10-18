@@ -24,7 +24,7 @@
 import { AgGridVue } from 'ag-grid-vue'
 
 export default {
-    data: function () {
+    data () {
         return {
             columns: null,
             rows: null,
@@ -55,14 +55,12 @@ export default {
                 this.columns = cols
                 this.rows = data
             })
-            .catch(err => { throw err })
+            .catch(err => { this.$emit('message', 'error', err.response.data.error) })
         },
         onGridReady (params) {
             this.gridApi = params.api
             this.columnApi = params.columnApi
             this.gridApi.setDomLayout('autoHeight')
-            // this.gridApi.expandAll()
-            // this.gridApi.sizeColumnsToFit()
             this.columnApi.autoSizeColumns()
         }
     },

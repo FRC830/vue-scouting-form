@@ -3,11 +3,11 @@
     <h1> Edit Config </h1>
     <div class="form-group">
       <input class="form-check-input" type="radio" name="configType" value="download" id='1' v-model="select" selected>
-      <label class="form-check-label" for="1">Match ID</label>
+      <label class="form-check-label" for="1">Select by Event ID</label>
     </div>
     <div class="form-group">
       <input class="form-check-input" type="radio" name="configType" value="upload" id='2' v-model="select">
-      <label class="form-check-label" for="2">Select File</label>
+      <label class="form-check-label" for="2">Upload Event Schedule</label>
     </div>
     <div class="form-group">
     <input v-if="select == 'download'" ref='match' type="text" name='match' placeholder="Match ID">
@@ -46,7 +46,7 @@ export default {
             let fileName = (this.select === 'upload') ? this.file.name : this.$refs.match.value + '.json'
 
             result.then((res) => {
-                this.$emit('message', 'success', `file ${fileName} was saved successfully!`)
+                this.$emit('message', 'success', res.data.success)
                 this.saveConfig({
                 'schedule': fileName,
                 'matchNum': 0,
@@ -57,7 +57,6 @@ export default {
                 console.log(err.response.data.error)
                 this.$emit('message', 'error', err.response.data.error)
             })
-
         },
         async uploadSchedule () {
             const formData = new FormData()
@@ -69,10 +68,8 @@ export default {
         },
         async saveConfig (config) {
             console.log('Config is:', config)
-            this.axios.post('/api/save/config.json', config).catch(err => {
-                this.$emit('message', 'error', err.response.data)
-            }).then(res => {
-                this.$emit('message', 'success', 'The configuration file was saved successfully!')
+            this.axios.post('/api/save/config.json', config).then(res => {
+                this.$emit('message', 'success', res.data.success)
             }).catch(err => {
                 this.$emit('message', 'error', err.response.data.error)
             })
