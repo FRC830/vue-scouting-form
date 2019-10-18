@@ -2,24 +2,24 @@
   <div id="scouting-form">
     <div class="row">
       <div class="col mb-1">
-          <button v-if="config.station" type="button" :class="[this.config.station == 'red' ? 'btn-danger' : 'btn-primary']"class="btn btn-primary mr-1"> Station
-            <span class="badge badge-light"> {{ config.station.capitalize() + " " + config.stationNum }} </span> 
+          <button v-if="config.station" type="button" :class="[this.config.station == 'red' ? 'btn-danger' : 'btn-primary']" class="btn btn-primary mr-1"> Station
+            <span class="badge badge-light"> {{ config.station.capitalize() + " " + config.stationNum }} </span>
           </button>
           <button v-if="config.schedule" type="button" class="btn btn-primary mr-1"> Event
-            <span class="badge badge-light"> {{ config.schedule.split('.')[0] }} </span> 
-          </button>  
+            <span class="badge badge-light"> {{ config.schedule.split('.')[0] }} </span>
+          </button>
           <button v-if="currentMatch" type="button" class="btn btn-primary mr-1"> Match
-            <span class="badge badge-light"> {{ currentMatch.match }} </span> 
+            <span class="badge badge-light"> {{ currentMatch.match }} </span>
           </button>
           <button v-if="currentMatch" type="button" class="btn btn-primary"> Team
-            <span class="badge badge-light"> {{ currentMatch[config.station][config.stationNum - 1].replace('frc','') }} </span> 
-          </button>  
+            <span class="badge badge-light"> {{ currentMatch[config.station][config.stationNum - 1].replace('frc','') }} </span>
+          </button>
       </div>
     </div>
-  
+
   <div class="row">
     <div class="col">
-    <form id="scouting" @submit.prevent="formSubmit" ref="form">
+    <form id="scouting" @submit.prevent="formSubmit">
 
       <div class="form-group">
         <input type="text" name="text" placeholder="Name" />
@@ -34,8 +34,6 @@
   </div>
 </template>
 <script>
-import serializeArray from '../serialize.js'
-
 class ValidationError extends Error {
   constructor (message) {
     super(message)
@@ -55,14 +53,8 @@ export default {
   mounted () {
     this.getConfigAndSchedule()
   },
-  computed: {
-    info () {
-      return `Currently scouting for ${this.config.station.capitalize()} ${this.config.stationNum} at event ${this.config.schedule.split('.')[0]}`
-    },
-
-  },
   methods: {
-    setCurrentMatch() {
+    setCurrentMatch () {
       this.currentMatch = this.schedule[this.config.matchNum]
     },
     async getConfigAndSchedule () {
@@ -92,7 +84,7 @@ export default {
       })
     },
     formSubmit (e) {
-      let data = serializeArray(this.$refs.form)
+      let data = this.$('#scouting').serialize()
       this.save('scouting.csv', data)
       this.config.matchNum += 1
       this.setCurrentMatch()

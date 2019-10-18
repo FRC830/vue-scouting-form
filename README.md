@@ -32,9 +32,8 @@ src
 │   ├── Tools.vue
 │   └── View.vue
 |
-├── assets
-│   └── ...
-└── serialize.js # Small function to decrease jquery dependency
+└── assets
+    └── ...
 
 dist # Production Code
 └── ...

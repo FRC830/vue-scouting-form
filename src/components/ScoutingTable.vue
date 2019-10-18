@@ -1,24 +1,5 @@
 <template>
-    <ag-grid-vue
-    class="ag-theme-balham"
-    :columnDefs="columns"
-    :rowData="rows"
-    @grid-ready="onGridReady">
-    </ag-grid-vue>
-    <!-- <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">index</th>
-                <th scope="col" v-for="(_, key) in data[0]" v-bind:key="key"> {{ key }} </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(row, index) in data" :key="row">
-                <th scope="row"> {{ index }} </th>
-                <td v-for="(val, idx) in row" v-bind:key="idx"> {{ val }} </td>
-            </tr>
-        </tbody>
-    </table> -->
+    <ag-grid-vue class="ag-theme-balham" :columnDefs="columns" :rowData="rows" @grid-ready="onGridReady"></ag-grid-vue>
 </template>
 <script>
 import { AgGridVue } from 'ag-grid-vue'
@@ -70,8 +51,3 @@ export default {
     name: 'ScoutingTable'
 }
 </script>
-<style lang="scss">
-* {
-    box-sizing: border-box;
-}
-</style>

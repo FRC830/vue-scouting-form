@@ -10,20 +10,18 @@
 <script>
 export default {
     name: 'ErrorMessage',
+    props: ['message', 'kind'],
     data () {
         return {
             msShow: 1000,
             msFade: 300
         }
     },
-    props: ['message', 'kind'],
     mounted () {
-        $(".alert-success").fadeTo(this.msShow, this.msFade).slideUp(this.msFade, () => {
-            $('.alert-success').alert('close')
+        this.$('.alert-success').fadeTo(this.msShow, this.msFade).slideUp(this.msFade, () => {
+            this.$('.alert-success').alert('close')
         })
-
     }
-
 }
 
 </script>
