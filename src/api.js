@@ -13,12 +13,11 @@ router.use(express.json())
 router.get('/', (req, res) => {
     res.status(200).json({ 'success': 'API online' })
 })
-
+// Upload a file
 router.post('/upload-schedule', (req, res, next) => {
     var form = formidable.IncomingForm()
     form.uploadDir = 'data'
     form.keepExtensions = true
-    form.keepFilenames = true
     form.parse(req)
     form
     .on('file', (_, file) => {
@@ -29,8 +28,9 @@ router.post('/upload-schedule', (req, res, next) => {
     .on('error', (err) => { next(err) })
     .on('end', () => { res.status(200).json({ 'success': `File ${req.file.name} was saved successfully` }) })
 })
-
-router.get('/get/:file', (req, res, next) => {
+// Delete, Get, or Post file contents
+router.route('/file/:file')
+.get((req, res, next) => {
     let loc = path.join('data', req.params.file)
     let fileType = req.params.file.split('.')[1]
     if (fileType === 'csv') {
@@ -53,12 +53,14 @@ router.get('/get/:file', (req, res, next) => {
         })
     }
 })
-router.post('/save/:file', (req, res, next) => {
+.post((req, res, next) => {
     console.log('Got', req.body, req.params.file)
     let fileType = req.params.file.split('.')[1]
     let loc = path.join('data', req.params.file)
-
-    if (fileType === 'json') {
+    if (req.body.params && req.body.params.rawData === true) {
+        fs.writeFile(loc, req.body.data, err => { if (err) { next(err) } })
+        res.status(200).json({ 'success': `File ${req.params.file} was saved successfully` })
+    } else if (fileType === 'json') {
         fs.writeFile(loc, JSON.stringify(req.body, null, 2), (err) => {
             if (err) { next(err) }
         })
@@ -69,11 +71,23 @@ router.post('/save/:file', (req, res, next) => {
         let ws = fs.createWriteStream(loc, { flags: 'a' })
         ws.on('close', () => res.status(200).json({ 'success': `File ${req.params.file} was saved successfully` }))
         ws.write((exists) ? '\n' : '')
-
-        csv.write([req.body], { headers: !exists })
+    
+        csv.write(req.body, { headers: !exists })
         .pipe(ws)
         .on('error', (e) => { next(e) })
     }
+})
+.delete((req, res, next) => {
+    let loc = path.join('data', req.params.file)
+    fs.unlink(loc, (err) => {
+        next(err)
+    })
+})
+router.get('/file/:file/download', (req, res, next) => {
+    let loc = path.join('data', req.params.file)
+    res.download(loc, (err) => {
+        next(err)
+    })
 })
 router.post('/download-schedule/:event', (req, res, next) => {
     let url = `https://www.thebluealliance.com/api/v3/event/${req.params.event}/matches/simple`

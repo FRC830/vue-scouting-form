@@ -18,8 +18,8 @@ export default {
         }
     },
     mounted () {
-        this.$('.alert-success').fadeTo(this.msShow, this.msFade).slideUp(this.msFade, () => {
-            this.$('.alert-success').alert('close')
+        $('.alert-success').fadeTo(this.msShow, this.msFade).slideUp(this.msFade, () => {
+            $('.alert-success').alert('close')
         })
     }
 }

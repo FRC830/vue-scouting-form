@@ -1,5 +1,5 @@
 <template>
-  <div id="scouting-form">
+  <div ref="scouting-form">
     <div class="row">
       <div class="col mb-1">
           <button v-if="config.station" type="button" :class="[this.config.station == 'red' ? 'btn-danger' : 'btn-primary']" class="btn btn-primary mr-1"> Station
@@ -19,7 +19,7 @@
 
   <div class="row">
     <div class="col">
-    <form id="scouting" @submit.prevent="formSubmit">
+    <form ref="form" @submit.prevent="formSubmit">
 
       <div class="form-group">
         <input type="text" name="text" placeholder="Name" />
@@ -34,6 +34,8 @@
   </div>
 </template>
 <script>
+import serializeArray from '../serialize.js'
+
 class ValidationError extends Error {
   constructor (message) {
     super(message)
@@ -75,7 +77,7 @@ export default {
       })
 
       this.axios.get('/api/get/' + `schedules/${this.config.schedule}`.replace('/', '%2F')).then(res => {
-        console.log('matchNum', this.config.matchNum)
+        console.log('matchNum', this.config.matchNum + 1)
         this.schedule = res.data
         this.setCurrentMatch()
         this.$emit('message', 'success', `Successfully retreived schedule ${this.config.schedule}.`)
@@ -84,13 +86,14 @@ export default {
       })
     },
     formSubmit (e) {
-      let data = this.$('#scouting').serialize()
-      this.save('scouting.csv', data)
+      let data = serializeArray(this.$refs.form)
+      this.save('scouting.csv', [data])
       this.config.matchNum += 1
       this.setCurrentMatch()
       this.save('config.json', this.config)
     },
     save (file, data) {
+      console.log(data)
       this.axios.post(`/api/save/${file}`, data).then(res => {
         this.$emit('message', 'success', res.data.success)
       }).catch(err => {

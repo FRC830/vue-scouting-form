@@ -11,19 +11,25 @@
     </div>
     <div class="form-group">
     <input v-if="select == 'download'" ref='match' type="text" name='match' placeholder="Match ID">
-    <input v-else ref='file' type="file" name="file" @change="fileSubmit">
+    <input v-else ref='file' type="file" accept=".json" name="file" @change="fileSubmit">
     </div>
+    <div class="row">
+        <div class="col">
 
     <div class="form-group">
       <select name="station" class="form-control" v-model="station" required>
         <option disabled selected>-- Select Station --</option>
         <option v-for="option in options" :value="option" v-bind:key="option" > {{ option }} </option>
         </select>
+        </div>
     </div>
     <button class="btn btn-primary" type="submit">Save</button>
+    </div>
   </form>
+
 </template>
 <script>
+
 export default {
     name: 'ConfigForm',
     data () {
@@ -68,7 +74,7 @@ export default {
         },
         async saveConfig (config) {
             console.log('Config is:', config)
-            this.axios.post('/api/save/config.json', config).then(res => {
+            this.axios.post('/api/file/config.json', config).then(res => {
                 this.$emit('message', 'success', res.data.success)
             }).catch(err => {
                 this.$emit('message', 'error', err.response.data.error)
