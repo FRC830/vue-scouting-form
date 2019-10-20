@@ -5,7 +5,7 @@
         <div class="card-body">
           <form id="config" @submit.prevent="configSubmit">
             <div class="form-check text-left">
-              <input class="form-check-input" type="radio" name="configType" value="input" id="1" v-model="select">
+              <input class="form-check-input" type="radio" name="configType" value="download" id="1" v-model="select">
               <label class="form-check-label" for="1">Select by Event ID</label>
             </div>
             <div class="form-check text-left mb-4">
@@ -37,9 +37,6 @@
               </div>
                   <button class="btn col-2 btn-primary" type="submit">Save</button>
             </div>
-                  <!-- <div class="col"> -->
-
-                  <!-- </div> -->
           </form>
       </div>
     </div>

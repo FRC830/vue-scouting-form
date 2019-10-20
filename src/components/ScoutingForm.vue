@@ -16,7 +16,7 @@
           </button>
       </div>
     </div>
-
+  <!-- This holds the actual scouting form -->
   <div class="row">
     <div class="col">
     <form ref="form" @submit.prevent="formSubmit">
@@ -27,6 +27,11 @@
       <div class="form-group">
         <input type="number" name="age" placeholder="Age" />
       </div>
+      <!--
+      <div class="form-group">
+        <input type="text" name="color" placeholder="Favorite Color">
+      </div>
+      -->
       <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
     </form>
     </div>
