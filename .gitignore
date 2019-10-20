@@ -22,3 +22,5 @@ yarn-error.log*
 
 # Data
 /data
+data/config.json
+data/scouting.csv

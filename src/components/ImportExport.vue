@@ -26,6 +26,7 @@
 <script>
 var FileSaver = require('file-saver')
 const csv = require('fast-csv')
+window.setImmediate = window.setTimeout
 
 export default {
   name: 'ImportExport',
