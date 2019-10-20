@@ -14,13 +14,15 @@
       <li><a href="https://vuejs.org" target="_blank" rel="noopener">Vue Documentation</a></li>
       <li><a href="https://getbootstrap.com/docs/4.0/components/alerts/" target="_blank" rel="noopener">Bootstrap Documentation</a></li>
     </ul>
-    <p> Code base created by <a href="github.com/reteps" target="_blank">Peter Stenger</a>. </p>
+  <footer>
+  <p> Code base created by <a href="https://github.com/reteps" target="_blank">Peter Stenger</a>. </p>
+
+  </footer>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
   props: {
     msg: String
   }
@@ -29,8 +31,19 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+p {
+    text-align: center;
+  }
+}
 h1, h3, p {
   color: rgb(34,31,126);
+}
+h1 {
+  font-weight: 600;
 }
 h3 {
   margin: 40px 0 0;
@@ -44,6 +57,6 @@ li {
   margin: 0 10px;
 }
 a {
-  color: rgb(255,218,0);
+  color: rgb(255, 200, 0);
 }
 </style>

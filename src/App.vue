@@ -1,23 +1,20 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand">
-      <router-link class="nav-link" to="/">Home</router-link>
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <router-link class="nav-link" to="/form">Scout</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/view">View</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/tools">Tools</router-link>
-          </li>
-        </ul>
+      <router-link class="navbar-brand" to="/"><img src="rat.png" width=25 height=25> The Ratpack </router-link>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <router-link class="nav-link" to="/form">Scout</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/view">View</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/tools">Tools</router-link>
+        </li>
+      </ul>
     </nav>
-    <div class="container container-fluid">
-      <router-view />
-      <!-- this will display each page -->
-    </div>
+    <router-view />
   </div>
 </template>
 
@@ -35,5 +32,4 @@
 a.router-link-exact-active {
   text-decoration: underline;
 }
-
 </style>

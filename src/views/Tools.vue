@@ -1,6 +1,6 @@
 <template>
 <div id="tools">
-<ErrorMessage v-for="message in messages" :message="message.value" :kind="message.kind" v-bind:key="message"></ErrorMessage>
+<ErrorMessage v-for="message in messages" :message="message.value" :kind="message.kind"></ErrorMessage>
 <ConfigForm @message="displayMessage(...arguments)"></ConfigForm>
 <ImportExport @message="displayMessage(...arguments)"></ImportExport>
 </div>

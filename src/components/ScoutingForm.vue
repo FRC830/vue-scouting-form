@@ -22,10 +22,10 @@
     <form ref="form" @submit.prevent="formSubmit">
 
       <div class="form-group">
-        <input type="text" name="text" placeholder="Name" />
+        <input type="text" name="name" placeholder="Name" />
       </div>
       <div class="form-group">
-        <input type="number" name="value" placeholder="Age" />
+        <input type="number" name="age" placeholder="Age" />
       </div>
       <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
     </form>
@@ -49,7 +49,7 @@ export default {
     return {
       config: {},
       schedule: {},
-      currentMatch: {}
+      currentMatch: null
     }
   },
   mounted () {
@@ -61,7 +61,7 @@ export default {
     },
     async getConfigAndSchedule () {
       // Retrieve Config
-      await this.axios.get('/api/get/config.json').then(res => {
+      await this.axios.get('/api/file/config.json').then(res => {
         if (!res.data.schedule) {
           throw new ValidationError('Configuration File Corrupted. Try Saving Configuration Again.')
         }
@@ -76,8 +76,7 @@ export default {
         this.$emit('message', 'error', err.response.data.error)
       })
 
-      this.axios.get('/api/get/' + `schedules/${this.config.schedule}`.replace('/', '%2F')).then(res => {
-        console.log('matchNum', this.config.matchNum + 1)
+      this.axios.get('/api/file/' + `schedules/${this.config.schedule}`.replace('/', '%2F')).then(res => {
         this.schedule = res.data
         this.setCurrentMatch()
         this.$emit('message', 'success', `Successfully retreived schedule ${this.config.schedule}.`)
@@ -86,7 +85,9 @@ export default {
       })
     },
     formSubmit (e) {
-      let data = serializeArray(this.$refs.form)
+      let form = this.$refs.form
+      let data = serializeArray(form)
+      console.log('Form Data =>', data)
       this.save('scouting.csv', [data])
       this.config.matchNum += 1
       this.setCurrentMatch()
@@ -94,7 +95,7 @@ export default {
     },
     save (file, data) {
       console.log(data)
-      this.axios.post(`/api/save/${file}`, data).then(res => {
+      this.axios.post(`/api/file/${file}`, data).then(res => {
         this.$emit('message', 'success', res.data.success)
       }).catch(err => {
         this.$emit('message', 'error', err.response.data.error)

@@ -19,7 +19,7 @@ export default {
     },
     mounted () {
         $('.alert-success').fadeTo(this.msShow, this.msFade).slideUp(this.msFade, () => {
-            $('.alert-success').alert('close')
+            $('.alert-success').remove()
         })
     }
 }

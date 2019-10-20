@@ -1,6 +1,6 @@
 <template>
-  <div class="about">
-    <h5>This is the form submit page</h5>
+  <div class="container">
+    <h3> The section below is fully customizable. </h3>
     <ErrorMessage v-for="message in messages" :message="message.value" :kind="message.kind"></ErrorMessage>
     <ScoutingForm @message="displayMessage(...arguments)"></ScoutingForm>
   </div>

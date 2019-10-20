@@ -1,5 +1,8 @@
 <template>
+    <div class="container">
     <ag-grid-vue class="ag-theme-balham" :gridOptions="gridOptions" :columnDefs="columns" :rowData="rows" @cellValueChanged="onCellValueChanged" @rowDataChanged="onRowDataChanged"></ag-grid-vue>
+
+    </div>
 </template>
 <script>
 import { AgGridVue } from 'ag-grid-vue'

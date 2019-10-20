@@ -34,10 +34,10 @@ router.route('/file/:file')
     let loc = path.join('data', req.params.file)
     let fileType = req.params.file.split('.')[1]
     if (fileType === 'csv') {
-        var results = []
+        let results = []
         fs.createReadStream(loc)
         .on('error', () => { next(Error(`The file ${req.params.file} could not be retrieved`)) })
-        .pipe(csv.parse({ headers: true }))
+        .pipe(csv.parse({ headers: true, ignoreEmpty: true }))
         .on('data', data => results.push(data))
         .on('error', (err) => { next(err) })
         .on('end', () => res.status(200).json(results))
