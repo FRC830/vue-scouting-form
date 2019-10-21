@@ -24,7 +24,7 @@ src
 │   ├── ConfigForm.vue # The settings form
 │   ├── ScoutingForm.vue # The scouting form
 │   └── ScoutingTable.vue # The data table
-│   └── ...
+│   └── HomePage.vue # The main screen
 |
 ├── views # Each web page that is accessible
 │   ├── Form.vue
@@ -48,11 +48,30 @@ vue.config.js # Vue configuration, allows us to integrate api into vue applicati
 This application uses [vue](https://vuejs.org/) to create each view. The scouting form is written using html and bootstrap. To modify the form, edit the `template` of `components/ScoutingForm.vue`
 ```html
 <template>
+ ...
   <form id="scouting" @submit.prevent="formSubmit" ref="form">
     <!-- Add form code here -->
   </form>
+ ...
 </template>
 ```
+
+## I'm from another team. How do I use this?
+
++ Edit `HomePage.vue` to change the homepage
++ Edit `ScoutingForm.vue` to change the form
+  + On every update, make sure to delete `data/scouting.csv`.
+  
+## Screenshots
+
+#### Homepage
+![](https://i.imgur.com/Lk66t5J.png)
+#### Scouting Form
+![](https://i.imgur.com/aP3fCll.png)
+#### Scouting Viewer
+![](https://i.imgur.com/tpvAt66.png)
+#### Configuration
+![](https://i.imgur.com/Jcnb1wO.png)
 ## Bugs? Errors? Feature Requests?
 
 - Open an issue or a pull request!
